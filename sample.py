@@ -5,9 +5,8 @@ Sample from a trained model
 import os
 from contextlib import nullcontext
 import torch
-import tiktoken
 from model import SolGPTConfig, SolGPT
-from .tokenizer.tokenizer import SolTokenizer
+from tokenizer.tokenizer import SolTokenizer
 
 # -----------------------------------------------------------------------------
 
