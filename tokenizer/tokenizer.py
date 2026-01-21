@@ -32,11 +32,11 @@ class SolTokenizer:
     # text can be either a string or a list of strings
     if isinstance(text, str):
       ids = self.tokenizer.encode(text, allowed_special=self.special_token_set)
-      ids.append(self.tokenizer.eot_token)
+      # ids.append(self.tokenizer.eot_token)
     
     elif isinstance(text, list):
       ids = self.tokenizer.encode_batch(text, allowed_special=self.special_token_set, num_threads=num_threads)
-      ids.append([self.tokenizer.eot_token])
+      # ids.append([self.tokenizer.eot_token])
     
     else:
       raise ValueError(f"Invalid input type: {type(text)}")

@@ -1,5 +1,6 @@
 '''
 Sample from a trained model
+python3 -m sample.py
 '''
 
 import os
