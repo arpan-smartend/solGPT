@@ -31,12 +31,13 @@ from model import SolGPTConfig, SolGPT
 
 # I/O
 out_dir = 'out'
+log_dir = 'out'
 eval_interval = 200
 log_interval = 1
 eval_iters = 200
 eval_only = False # if True, script exits right after the first eval
 always_save_checkpoint = True # if True, always save a checkpoint after each eval
-init_from = 'scratch' # 'scratch' or 'resume' # TODO: take arg from command line
+init_from = 'resume' # 'scratch' or 'resume' # TODO: take arg from command line
 
 # data
 dataset = 'slither-audited-smart-contracts'
@@ -50,6 +51,7 @@ n_head = 8
 n_embd = 768
 dropout = 0.0 # for pretraining 0 is good, for fine-tuning dropout must be 0.1+
 bias = False # do we use bias inside LayerNorm and Linear layers?
+vocab_size = 50496  
 
 # AdamW optimizer
 learning_rate = 6e-4 # max learning rate
@@ -123,6 +125,7 @@ print(f'tokens per iteration will be: {tokens_per_iter:,}')
 
 if master_process:
   os.makedirs(out_dir, exist_ok=True)
+  os.makedirs(log_dir, exist_ok=True)
 
 torch.manual_seed(1337 + seed_offset)
 
@@ -162,13 +165,18 @@ best_val_loss = 1e9
 
 # model init TODO: take args from command line
 model_args = dict(n_layer=n_layer, n_head=n_head, n_embd=n_embd, block_size=block_size,
-                  bias=bias, dropout=dropout)
+                  bias=bias, dropout=dropout, vocab_size=50496)
 
 if init_from == 'scratch':
   # init a new model from scratch
   print('Initializing a new model from scratch')
   solGPT_config = SolGPTConfig(**model_args)
   model = SolGPT(solGPT_config)
+
+  if master_process:
+    log_file = os.path.join(log_dir, 'log.txt')
+    with open(log_file, 'w') as f: # open for writing to clear the file
+      pass
 
 elif init_from == 'resume':
   print(f'Resuming training from {out_dir}')
@@ -200,8 +208,16 @@ elif init_from == 'resume':
   iter_num = checkpoint['iter_num']
   best_val_loss = checkpoint['best_val_loss']
 
+  if master_process:
+    log_file = os.path.join(log_dir, 'log.txt')
+
+    if not os.path.exists(log_file) and not os.path.isfile(log_file):
+      with open(log_file, 'w') as f: # open for writing to clear the file
+        pass
+
+
 else:
-  raise ValueError(f"Invalid init_type: {init_from}")
+  raise ValueError(f'Invalid init_type: {init_from}')
 
 model.to(device)
 # -----------------------------------------------------------------------------
@@ -308,8 +324,11 @@ while True:
           'iter_num': iter_num,
           'best_val_loss': best_val_loss,
         }
-        print(f"saving checkpoint to {out_dir}")
+        print(f'saving checkpoint to {out_dir}')
         torch.save(checkpoint, os.path.join(out_dir, 'ckpt.pt'))
+    
+    with open(log_file, 'a') as f:
+      f.write(f'step {iter_num}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f} \n')
   
   if iter_num == 0 and eval_only:
     break
@@ -364,7 +383,10 @@ while True:
       if local_iter_num >= 5: # let the training loop settle a bit
         mfu = raw_model.estimate_mfu(batch_size * gradient_accumulation_steps, dt)
         running_mfu = mfu if running_mfu == -1.0 else 0.9*running_mfu + 0.1*mfu
-      print(f"iter {iter_num}: loss {lossf:.4f}, time {dt*1000:.2f}ms, mfu {running_mfu*100:.2f}%")
+      
+      print(f'iter {iter_num}: loss {lossf:.4f}, time {dt*1000:.2f}ms, mfu {running_mfu*100:.2f}%')
+      with open(log_file, 'a') as f:
+        f.write(f'iter {iter_num}: loss {lossf:.4f}, time {dt*1000:.2f}ms, mfu {running_mfu*100:.2f}%  \n')
     
     iter_num += 1
     local_iter_num += 1
