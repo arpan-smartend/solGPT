@@ -27,21 +27,42 @@ class SolTokenizer:
         **special_token_ids
       }
     )
+  
+  def get_eot_token_id(self):
+    return self.tokenizer.eot_token
 
-  def encode(self, text, num_threads=8):
+  def encode(self, text, prepend=None, append=None, num_threads=8):
     # text can be either a string or a list of strings
+
+    if prepend is not None:
+      prepend_id = prepend if isinstance(prepend, int) else self.tokenizer.encode(prepend, allowed_special=self.special_token_set)
+    
+    if append is not None:
+      append_id = append if isinstance(append, int) else self.tokenizer.encode(append, allowed_special=self.special_token_set)
+
     if isinstance(text, str):
       ids = self.tokenizer.encode(text, allowed_special=self.special_token_set)
-      # ids.append(self.tokenizer.eot_token)
+
+      if prepend is not None:
+        ids.insert(0, prepend_id)
+
+      if append is not None:
+        ids.append(append_id)
     
     elif isinstance(text, list):
       ids = self.tokenizer.encode_batch(text, allowed_special=self.special_token_set, num_threads=num_threads)
-      # ids.append([self.tokenizer.eot_token])
+      if prepend is not None:
+        for ids_row in ids:
+          ids_row.insert(0, prepend_id)
+
+      if append is not None:
+        for ids_row in ids:
+          ids_row.append(append_id)
     
     else:
       raise ValueError(f"Invalid input type: {type(text)}")
 
-    return ids 
+    return ids
   
   def decode(self, ids):
     return self.tokenizer.decode(ids)

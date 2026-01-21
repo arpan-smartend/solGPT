@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
   # process the dataset
   def process(dataset_col):
-    ids = sol_tokenizer.encode(dataset_col['source_code'])
+    ids = sol_tokenizer.encode(dataset_col['source_code'], append=sol_tokenizer.get_eot_token_id())
     out = {'ids': ids, 'len': len(ids)}
     return out
   
@@ -66,8 +66,8 @@ if __name__ == '__main__':
     arr.flush() # complete writing the file
 
 '''
-train.bin has 1269618024 tokens and the filesize is 2.54 gb
-val.bin has 12534342 tokens and the filesize is 25.1 mb
+train.bin has 842568048 tokens and the filesize is 1.69 gb
+val.bin has 8441544 tokens and the filesize is 16.9 mb
 '''
 
     
