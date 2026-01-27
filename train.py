@@ -37,10 +37,10 @@ log_interval = 1
 eval_iters = 200
 eval_only = False # if True, script exits right after the first eval
 always_save_checkpoint = True # if True, always save a checkpoint after each eval
-init_from = 'scratch' # 'scratch' or 'resume' # TODO: take arg from command line
+init_from = 'resume' # 'scratch' or 'resume' # TODO: take arg from command line
 
 # data
-dataset = 'slither-audited-smart-contracts'
+dataset = 'seyyedaliayati-solidity-dataset'
 gradient_accumulation_steps = 5 * 8 # used to simulate larger batch sizes
 batch_size = 12 # if gradient_accumulation_steps > 1, this is the micro-batch size
 block_size = 1024
