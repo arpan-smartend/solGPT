@@ -18,9 +18,9 @@ This creates a `train.bin` and `val.bin` in that specific data directory. Now it
 python train.py
 ```
 
-In train.py we have the variable `dataset = 'seyyedaliayati-solidity-dataset'`. This point to the folder to use that specific train.bin to train our model. Please feel free to switch the folders like `dataset = 'slither-audited-smart-contracts'` to train on both the datasets.
+In train.py we have the variable `dataset = 'seyyedaliayati-solidity-dataset'`. This points to the folder to use the specific `train.bin` to train our model. Please feel free to switch the folders like `dataset = 'slither-audited-smart-contracts'` to train on both the datasets.
 
-Our program with save a `log.txt` and `ckpt.pt` after every 200 iterations in the `out` directory. We can change the number of iteration interval to save in the `train.py` file. I am not pushing the file `ckpt.pt` at this point as I have only trained for ~16000 iterations and the model file is `1.15 GB`.
+Our program will save a `log.txt` and `ckpt.pt` after every 200 iterations in the `out` directory. We can change this interval in `train.py` file. I am not pushing the file `ckpt.pt` at this point as I have only trained for ~16000 iterations and file size is `1.15 GB`.
 
 ## sample from the model
 
@@ -28,7 +28,7 @@ Our program with save a `log.txt` and `ckpt.pt` after every 200 iterations in th
 python sample.py
 ```
 
-This generates a few samples. for example after training the model for just 16200 iterations we get -
+This generates a few samples. few examples after training the model for just 16200 iterations we get -
 
 ```
 pragma solidity ^0.8.0;
@@ -195,7 +195,7 @@ abstract contract ERC1155Receiver {
 -----------------------------------------------------------------------------
 ```
 
-I have only trained the model on my macbook equipped with Apple m1 pro with 32gb of ram with 16 core metal 4 GPU, NOT BAD performance after training for only ~16000 iterations. Can do wonders if we get a good cuda device. I do not have any budget at this point `¯\_(ツ)_/¯`
+I have only trained the model on my macbook equipped with Apple m1 pro with 32gb of ram and 16 core metal 4 GPU, NOT BAD performance after training for only ~16000 iterations. Can do wonders if we get a good cuda device. I do not have any budget at this point `¯\_(ツ)_/¯`
 
 ## finetuning
 
