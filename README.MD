@@ -1,5 +1,7 @@
 Small GPT model trained on solidity
 
+![reprosolGPT](assets/solGPT_loss.png)
+
 ## quickstart
 
 ```sh
