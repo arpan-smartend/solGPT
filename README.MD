@@ -681,11 +681,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
 
 I have only trained the model on my macbook equipped with Apple m1 pro with 32gb of ram and 16 core metal 4 GPU, NOT BAD performance after training for only ~25000 iterations. Can do wonders if we get a good cuda device. I do not have any budget at this point `¯\_(ツ)_/¯`
 
-## finetuning
-
-For the next steps I will fine tune this model to generate solidity code and also for vulnerability detection.
-
-## todos
+## Next steps
 
 - Finetune to generate solidity code
 - Finetune to detect vulnerability in solidity code.
