@@ -291,6 +291,15 @@ def get_lr(it):
   return min_lr + coeff * (learning_rate - min_lr)
 # -----------------------------------------------------------------------------
 
+# Using device: mps
+# tokens per iteration will be: 491,520
+# Resuming training from out
+# number of parameters: 95.42M
+# /Users/arpankumarnandi/Documents/workspace/Sol_GPT/train.py:226: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+#   scaler = torch.amp.GradScaler(enabled=(dtype == 'float16'))
+# num decayed parameter tensors: 34, with 96,190,464 parameters
+# num non-decayed parameter tensors: 18, with 13,824 parameters
+
 # training loop
 X, Y = get_batch('train')
 t0 = time.time()
